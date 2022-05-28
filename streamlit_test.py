@@ -15,6 +15,7 @@ from sklearn.metrics import r2_score
 sns.set()
 
 
+@st.cache
 def set_session_state():
     if 'last_click' not in st.session_state:
         st.session_state.last_click = 0
@@ -125,6 +126,13 @@ def preprocess_data():
             df.columns
         )
         df_log[log_features] = np.log(df_log[log_features])
+        st.write('対数変換後の目的変数との相関を表示')
+        for feature in log_features:
+            fig, ax = plt.subplots(figsize=(5, 3))
+            ax.scatter(x=df_log[feature], y=df_log['PRICES'])
+            plt.xlabel(feature)
+            plt.ylabel('PRICES')
+            st.pyplot(fig)
     
     # 標準化の実施有無を選択
     left_column, right_column = st.columns(2)
@@ -143,8 +151,16 @@ def preprocess_data():
         scaler = preprocessing.StandardScaler()
         scaler.fit(df_std[std_features])
         df_std[std_features] = scaler.transform(df_std[std_features])
+        st.write('標準化後の目的変数との相関を表示')
+        for feature in std_features:
+            fig, ax = plt.subplots(figsize=(5, 3))
+            ax.scatter(x=df_std[feature], y=df_std['PRICES'])
+            plt.xlabel(feature)
+            plt.ylabel('PRICES')
+            st.pyplot(fig)
+
     st.session_state.preprocessed_data = df_std
-    st.session_state.log_featuers = log_features
+    st.session_state.log_features = log_features
     st.write('これでよければ2. データの分割を押してください')
 
 
@@ -197,9 +213,15 @@ def train_data():
     right_column.write(st.session_state.x_val)
     st.write('正解データ')
     left_column, right_column = st.columns(2)
+    left_column.write('訓練データ')
+    right_column.write('検証用データ')
+    left_column, right_column = st.columns(2)
     left_column.write(st.session_state.y_train)
     right_column.write(st.session_state.y_val)
     st.write('予測データ')
+    left_column, right_column = st.columns(2)
+    left_column.write('訓練データ')
+    right_column.write('検証用データ')
     left_column, right_column = st.columns(2)
     left_column.write(Y_pred_train)
     right_column.write(Y_pred_val)
@@ -254,12 +276,14 @@ def view_results():
 def download_result():
     st.title('結果をダウンロード')
     csv_output = pd.DataFrame(st.session_state.y_pred_val, columns=['PRICES']).to_csv().encode('utf-8')
-    st.download_button(
+    bool_download = st.download_button(
         label='ダウンロード',
         data=csv_output,
         file_name='予測結果.csv',
         mime='text/csv'
     )
+    if bool_download:
+        st.write('finish!')
 
 
 def main():
@@ -269,9 +293,6 @@ def main():
     is_train_click = st.sidebar.button('3. 学習')
     is_result_click = st.sidebar.button('4. 結果の表示')
     is_download_click = st.sidebar.button('5. 結果のダウンロード')
-    if st.sidebar.button('設定のリセット'):
-        for key in st.session_state.keys():
-            del st.session_state[key]
     if is_preprocess_click:
         st.session_state.last_click = 1
         trans_screen(st.session_state.last_click)
