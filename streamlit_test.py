@@ -46,7 +46,6 @@ def set_session_state():
 def trans_screen(process: int):
     if process == 0:
         main_screen()
-        st.stop()
     elif process == 1:
         preprocess_data()
         st.session_state.is_click_preprocess = True
@@ -309,6 +308,7 @@ def main():
         st.session_state.last_click = 5
         trans_screen(st.session_state.last_click)
     else:
+        print(st.session_state.last_click)
         trans_screen(st.session_state.last_click)
 
 
