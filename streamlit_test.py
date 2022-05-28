@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from dataclasses import dataclass
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -76,8 +75,6 @@ def view_error_screen():
     st.title('エラー画面')
     st.write('誤った順番で実行しようとしていませんか？')
     st.write('サイドバーの順番通りに実行してください')
-
-
 
 
 def preprocess_data():
