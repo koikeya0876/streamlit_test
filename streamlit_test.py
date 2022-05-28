@@ -308,8 +308,8 @@ def main():
         st.session_state.last_click = 5
         trans_screen(st.session_state.last_click)
     else:
-        print(st.session_state.last_click)
-        trans_screen(st.session_state.last_click)
+        main_screen()
+        # trans_screen(st.session_state.last_click)
 
 
 if __name__ == '__main__':
