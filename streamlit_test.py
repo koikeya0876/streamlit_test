@@ -15,7 +15,6 @@ from sklearn.metrics import r2_score
 sns.set()
 
 
-@st.cache
 def set_session_state():
     if 'last_click' not in st.session_state:
         st.session_state.last_click = 0
@@ -294,22 +293,15 @@ def main():
     is_download_click = st.sidebar.button('5. 結果のダウンロード')
     if is_preprocess_click:
         st.session_state.last_click = 1
-        trans_screen(st.session_state.last_click)
     elif is_split_click:
         st.session_state.last_click = 2
-        trans_screen(st.session_state.last_click)
     elif is_train_click:
         st.session_state.last_click = 3
-        trans_screen(st.session_state.last_click)
     elif is_result_click:
         st.session_state.last_click = 4
-        trans_screen(st.session_state.last_click)
     elif is_download_click:
         st.session_state.last_click = 5
-        trans_screen(st.session_state.last_click)
-    else:
-        main_screen()
-        # trans_screen(st.session_state.last_click)
+    trans_screen(st.session_state.last_click)
 
 
 if __name__ == '__main__':
